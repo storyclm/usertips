@@ -1,0 +1,25 @@
+@font-face {
+    font-family: 'Museo Sans Cyrl';
+    src: url('museosanscyrl300.eot'),
+         url('museosanscyrl300.ttf');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Museo Sans Cyrl';
+    src: url('museosanscyrl700.eot'),
+         url('museosanscyrl700.ttf');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Museo Sans Cyrl';
+    src: url('museosanscyrl900.eot'), 
+         url('museosanscyrl900.ttf');
+    font-weight: 900;
+    font-style: normal;
+}
+@font-face {
+    font-family: "MyriadPro";
+    src: url(MyriadPro-Regular.ttf);
+}
