@@ -22,11 +22,7 @@ var UTManager = function (options) {
 		this.handler = options.handler || null;
 
 		// for switch animation
-		if (window.sessionStorage.getItem("userTipsEnabled") == "false") {
-			this.userTipsEnabled = false;
-		} else {
-			this.userTipsEnabled = true;
-		}
+		this.userTipsEnabled = window.sessionStorage.getItem("userTipsEnabled") === 'true';
 
 		// exceptions
 		var typesLength = this.actionType.length;
@@ -59,13 +55,15 @@ var UTManager = function (options) {
 
 UTManager.prototype.tap = function () {
 	var self = this;
-	if (!self.userTipsEnabled) {
-		self.handlerAction();
-		return
+	if (!self.userTipsEnabled && self.handler != null) {
+		self.handler();
+		return;
 	}
 
 	var start_time = self.delay;
 	var len = self.obj.length;
+	var del = start_time + len * self.tapInterval + 500;
+	self.handlerAction(del);
 	for (var i = 0; i < len; i++) {
 		(function (i) {
 			setTimeout(function () {
@@ -98,10 +96,9 @@ UTManager.prototype.tap = function () {
 							duration: self.duration,
 							complete: function () {
 								$(tapObj).css("-webkit-filter", "none");
-								self.handlerAction();
 							}
 						});
-					}, 50);
+					}, 100);
 				} else {
 					$(tapObj).css("text-shadow", "0 0 20px " + color);
 					count = 0;
@@ -113,10 +110,9 @@ UTManager.prototype.tap = function () {
 							duration: self.duration,
 							complete: function () {
 								$(tapObj).css("text-shadow", "none");
-								self.handlerAction();
 							}
 						});
-					}, 50);
+					}, 100);
 				}
 			}, start_time += self.tapInterval);
 		})(i);
@@ -125,13 +121,16 @@ UTManager.prototype.tap = function () {
 
 UTManager.prototype.drag = function () {
 	var self = this;
-	if (!self.userTipsEnabled) {
-		self.handlerAction();
-		return
+	if (!self.userTipsEnabled && self.handler != null) {
+		self.handler();
+		return;
 	}
+
 	var start_time = self.delay;
 	var len = self.obj.length;
 	var dragDuration = self.duration / 2;
+	var del = start_time + len * self.dragInterval + self.duration;
+	self.handlerAction(del);
 	for (var i = 0; i < len; i++) {
 		(function (i) {
 			var deltaX;
@@ -155,7 +154,6 @@ UTManager.prototype.drag = function () {
 				dragCopy.animate({left: startPositionLeft + deltaX, top: startPositionTop + deltaY}, dragDuration, function () {
 					dragCopy.animate({left: startPositionLeft, top: startPositionTop}, dragDuration, function () {
 						dragCopy.remove();
-						self.handlerAction();
 					});
 				});
 			}, start_time += self.dragInterval);
@@ -163,8 +161,11 @@ UTManager.prototype.drag = function () {
 	}
 };
 
-UTManager.prototype.handlerAction = function () {
+UTManager.prototype.handlerAction = function (delay) {
+	var self = this;
 	if (self.handler != null) {
-		self.handler();
+		setTimeout(function () {
+			self.handler();
+		}, delay)
 	}
 };
