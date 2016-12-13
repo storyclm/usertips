@@ -9,6 +9,8 @@ var UTManager = function (options) {
 		this.actionType = options.actionType || ["pic"];// "txt"
 		this.tapInterval = options.tapInterval || 100;
 		this.flashColor = options.flashColor || ["#fff"];
+		this.flashCount = options.flashCount || "infinite";
+		this.flashInterval = options.flashInterval || 800;
 
 		// for drag and slider
 		this.deltaX = options.deltaX || [0];
@@ -51,6 +53,175 @@ var UTManager = function (options) {
 	} else {
 		return new UTManager(this.options);
 	}
+};
+
+UTManager.prototype.flash = function () {
+	var self = this;
+	if (!self.userTipsEnabled && self.handler != null) {
+		self.handler();
+		return;
+	}
+
+	var count = self.flashCount;
+	var start_time = self.delay;
+	var len = self.obj.length;
+	var del = start_time + len * self.tapInterval + 500;
+	self.handlerAction(del);
+	if(count == 1) {
+		for (var i = 0; i < len; i++) {
+			(function (i) {
+				setTimeout(function () {
+					var effect;
+					var color;
+					var tapObj = self.obj[i];
+
+					if (self.actionType.length == 1) {
+						effect = self.actionType[0];
+					} else {
+						effect = self.actionType[i];
+					}
+
+					var count = 20;
+					$(tapObj).css({orphans: count});
+					if (effect == "pic") {
+						$(tapObj).css("-webkit-filter", "saturate(1) brightness(1) drop-shadow(0px 0px 20px #fff)");
+						count = 1;
+						setTimeout(function () {
+							$(tapObj).animate({orphans: count}, {
+								step: function (now, fx) {
+									$(this).css("-webkit-filter", "saturate("+ 1/now +") brightness(" + now/2 + ") drop-shadow(0 0 " + now + "px #fff)");
+									console.log(1/now + " " + now/2 + " " + now);
+								},
+								duration: self.duration,
+								complete: function () {
+									$(tapObj).css("-webkit-filter", "none");
+								}
+							});
+						}, 100);
+					} else {
+						$(tapObj).css("text-shadow", "0 0 20px " + color);
+						count = 0;
+						setTimeout(function () {
+							$(tapObj).animate({orphans: count}, {
+								step: function (now, fx) {
+									$(this).css("text-shadow", "0 0 " + now + "px " + color);
+								},
+								duration: self.duration,
+								complete: function () {
+									$(tapObj).css("text-shadow", "none");
+								}
+							});
+						}, 100);
+					}
+				}, start_time += self.tapInterval);
+			})(i);
+		}
+	} else if (count > 1) {
+		for (var j = 0; j<count; j++) {
+			setTimeout(function() {
+				for (var i = 0; i < len; i++) {
+					(function (i) {
+						setTimeout(function () {
+							var effect;
+							var color;
+							var tapObj = self.obj[i];
+
+							if (self.actionType.length == 1) {
+								effect = self.actionType[0];
+							} else {
+								effect = self.actionType[i];
+							}
+
+							var count = 20;
+							$(tapObj).css({orphans: count});
+							if (effect == "pic") {
+								$(tapObj).css("-webkit-filter", "saturate(1) brightness(1) drop-shadow(0px 0px 20px #fff)");
+								count = 1;
+								setTimeout(function () {
+									$(tapObj).animate({orphans: count}, {
+										step: function (now, fx) {
+											$(this).css("-webkit-filter", "saturate("+ 1/now +") brightness(" + now/2 + ") drop-shadow(0 0 " + now + "px #fff)");
+											console.log(1/now + " " + now/2 + " " + now);
+										},
+										duration: self.duration,
+										complete: function () {
+											$(tapObj).css("-webkit-filter", "none");
+										}
+									});
+								}, 100);
+							} else {
+								$(tapObj).css("text-shadow", "0 0 20px " + color);
+								count = 0;
+								setTimeout(function () {
+									$(tapObj).animate({orphans: count}, {
+										step: function (now, fx) {
+											$(this).css("text-shadow", "0 0 " + now + "px " + color);
+										},
+										duration: self.duration,
+										complete: function () {
+											$(tapObj).css("text-shadow", "none");
+										}
+									});
+								}, 100);
+							}
+						}, start_time += self.tapInterval);
+					})(i);
+				}
+			}, self.flashInterval);
+		}
+	} else if (count == "infinite") {
+		var intervalID = setInterval(function() {
+			for (var i = 0; i < len; i++) {
+				(function (i) {
+					setTimeout(function () {
+						var effect;
+						var color;
+						var tapObj = self.obj[i];
+
+						if (self.actionType.length == 1) {
+							effect = self.actionType[0];
+						} else {
+							effect = self.actionType[i];
+						}
+
+						var count = 20;
+						$(tapObj).css({orphans: count});
+						if (effect == "pic") {
+							$(tapObj).css("-webkit-filter", "saturate(1) brightness(1) drop-shadow(0px 0px 20px #fff)");
+							count = 1;
+							setTimeout(function () {
+								$(tapObj).animate({orphans: count}, {
+									step: function (now, fx) {
+										$(this).css("-webkit-filter", "saturate("+ 1/now +") brightness(" + now/1 + ") drop-shadow(0 0 " + now + "px #fff)");
+										console.log(1/now + " " + now/2 + " " + now);
+									},
+									duration: self.duration,
+									complete: function () {
+										$(tapObj).css("-webkit-filter", "none");
+									}
+								});
+							}, 100);
+						} else {
+							$(tapObj).css("text-shadow", "0 0 20px " + color);
+							count = 0;
+							setTimeout(function () {
+								$(tapObj).animate({orphans: count}, {
+									step: function (now, fx) {
+										$(this).css("text-shadow", "0 0 " + now + "px " + color);
+									},
+									duration: self.duration,
+									complete: function () {
+										$(tapObj).css("text-shadow", "none");
+									}
+								});
+							}, 100);
+						}
+					}, start_time += self.tapInterval);
+				})(i);
+			}
+		}, self.flashInterval);
+	}
+	
 };
 
 UTManager.prototype.tap = function () {

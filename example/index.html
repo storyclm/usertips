@@ -68,10 +68,22 @@
 <script src="js/userTips.js"></script>
 <script>
 	$(function () {
+		var options = {
+			obj: [".picture"],
+			actionType: ["pic"],
+			flashCount: "infinite",
+			flashInterval: 1000,
+			duration: 700
+		};
+
+		var ut = new UTManager(options);
+		ut.flash();
+		
+		
 		var options1 = {
-			obj: [".picture", ".txt1"],
-			actionType: ["pic", "txt"],
-			flashColor: ["yellow", "#e4a4fc"],
+			obj: [".txt1"],
+			actionType: ["txt"],
+			flashColor: ["#e4a4fc"],
 			tapInterval: 300,
 			delay: 800
 		};
